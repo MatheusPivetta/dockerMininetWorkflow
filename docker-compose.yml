@@ -12,3 +12,20 @@ services:
     volumes:
      - /tmp/.X11-unix:/tmp/.X11-unix
      - /lib/modules:/lib/modules
+     - $PWD/workflow-volume:/APP/workflow-volume
+  
+
+  cicflowmeter:
+    image: mielverkerken/cicflowmeter:latest
+    volumes:
+      - $PWD/workflow-volume:/tmp/pcap
+    command: ["/tmp/pcap/input", "/tmp/pcap/output"]
+    depends_on:
+      mininet:
+        condition: service_completed_successfully
+
+  scikit:
+    image: devashishupadhyay/scikit-learn-docker:latest
+    volumes:
+      - $PWD/workflow-volume:/APP/workflow-volume
+    command: ["ls"]
