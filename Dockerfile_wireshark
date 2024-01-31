@@ -1,0 +1,6 @@
+FROM alexandreoda/wireshark:latest
+VOLUME /workflow-volume
+WORKDIR /workflow-volume
+COPY workflow-volume/wiresharkBash.sh /workflow-volume
+RUN chmod +x wiresharkBash.sh
+ENTRYPOINT [ "./wiresharkBash.sh" ]

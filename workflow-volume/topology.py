@@ -33,8 +33,8 @@ if __name__ == '__main__':
     s1.cmd('ovs-vsctl add-port s1 s1-eth3 -- --id=@p get port s1-eth3 -- --id=@m create mirror name=m0 select-all=true output-port=@p -- set bridge s1 mirrors=@m')
     
     # Start tcpdump and ping concurrently
-    h3_cmd = "tcpdump -i h3-eth0 -G 10 -W 1 -w input/mycap.pcap"
-    h1_cmd = "timeout 5s ping -c 5 10.0.0.2"
+    h3_cmd = "tcpdump -i h3-eth0 -G 30 -W 1 -w input/mycap.pcap"
+    h1_cmd = "timeout 20s hping3 -S -V -d 120 -w 64 -p 80 --rand-source --flood 10.0.0.2"
     
     # Create processes for tcpdump and ping
     tcpdump_process = multiprocessing.Process(target=run_tcpdump, args=(h3_cmd,))
