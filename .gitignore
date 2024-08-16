@@ -1,2 +1,4 @@
-/workflow-volume/input
-/workflow-volume/output
+/workflow-volume/cicflowmeter
+/workflow-volume/scikit
+/workflow-volume/models
+/Training/models

@@ -6,7 +6,7 @@ services:
     network_mode: "host"
     privileged: true
     working_dir: /APP/workflow-volume
-    entrypoint: ./entrypoint/entrypoint.sh
+    entrypoint: ./entrypoint/mininetBash.sh
     environment:
      - DISPLAY
     volumes:
@@ -18,7 +18,7 @@ services:
   wireshark:
     image: linuxserver/wireshark:latest
     working_dir: /APP/workflow-volume
-    entrypoint: ./entrypoint/wiresharkBash.sh
+    entrypoint: python entrypoint/wireshark.py
     volumes:
       - $PWD/workflow-volume:/APP/workflow-volume
     depends_on:
@@ -26,19 +26,31 @@ services:
         condition: service_completed_successfully
 
 
-  cicflowmeter:
+  cicflowmeter_attack:
     image: mielverkerken/cicflowmeter:latest
     volumes:
       - $PWD/workflow-volume:/tmp/pcap
-    command: ["/tmp/pcap/input", "/tmp/pcap/output"]
+    command: ["/tmp/pcap/cicflowmeter/attack_output_ordered", "/tmp/pcap/cicflowmeter/attack_output"]
     depends_on:
       wireshark:
         condition: service_completed_successfully
 
+  cicflowmeter_benign:
+    image: mielverkerken/cicflowmeter:latest
+    volumes:
+      - $PWD/workflow-volume:/tmp/pcap
+    command: ["/tmp/pcap/cicflowmeter/benign_output_ordered", "/tmp/pcap/cicflowmeter/benign_output"]
+    depends_on:
+      cicflowmeter_attack:
+        condition: service_completed_successfully
+
   scikit:
-    image: devashishupadhyay/scikit-learn-docker:latest
+    image: quay.io/jupyter/datascience-notebook:2024-03-14
     volumes:
       - $PWD/workflow-volume:/APP/workflow-volume
+    working_dir: /APP/workflow-volume
+    user: root
+    entrypoint: ./entrypoint/scikitBash.sh
     depends_on:
-      cicflowmeter:
+      cicflowmeter_benign:
         condition: service_completed_successfully
