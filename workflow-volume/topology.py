@@ -48,7 +48,7 @@ def syn_flood_attack(target, interface, duration_in_s):
 def benign_traffic(file_name, target, interface, duration_in_s):
     # Start tcpdump and ping concurrently
     
-    h3_cmd = "time   -i " + interface + "  -a duration:"+ duration_in_s +" \
+    h3_cmd = "time tshark -i " + interface + "  -a duration:"+ duration_in_s +" \
                            -w cicflowmeter/benign_input/"+ file_name +".pcap"
                     #    -b duration:60 \
                     #    -b files:1000 \
@@ -104,7 +104,7 @@ if __name__ == '__main__':
     target = "10.0.0.2"
     interface = "h3-eth0"
     attack_duration_s = "10"
-    benign_duration_s = "10"
+    benign_duration_s = "60"
     
     time.sleep(3)
     print(datetime.datetime.now(), " - Iniciando fluxo Benigno")
